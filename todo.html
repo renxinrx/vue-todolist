@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<!-- 移动端 缩放设置-->
+	<meta name='viewport' content='initial-scale=1.0,maximum-scale=1.0'>
+	<title>todo list项目练习</title>
+	<script src='./vue.min.js'></script>
+	<style>
+		.edit{
+		    display:block ;
+		    width:80%;
+		    height: 35px;
+		    line-height: 35px;
+		    margin: 30px auto;
+		    box-sizing: border-box;
+		    padding-left: 4px;
+		    border-radius: 4px;
+		    border:1px solid #ccc;
+		    outline: 0;
+		    box-shadow: 0 0 5px #ccc;
+		}
+	.list{width: 80%;margin:0 auto;padding:0;}
+	.unit{
+		position: relative;
+		padding:10px 0;
+		border-bottom: 1px solid #efefef;
+		list-style: none;
+	}
+	.unit:last-child{border-bottom: 0;}
+	.finished{text-decoration:line-through;color:#ccc;}
+	.delete{
+		background: red;
+	    text-decoration: none;
+	    position: absolute;
+	    right:0;
+	    font-size: 12px;
+	    border: 0;
+	    outline: 0;
+	    padding: 2px 5px;
+	    border-radius: 5px;
+	    color: #fff;
+	}
+	 .empty{
+	    font-size: 13px;
+	    color: #ccc;
+	    text-align: center;
+	    padding: 10px 0;
+ }
+	</style>
+</head>
+<body>
+	<div id="app">
+	<p>思路：</p>
+	<p>
+	我们创建一个数组来存储用户输入的每一个任务内容
+	</p>
+	<p>
+	假设用户输入内容后，按下enter键表示完成输入，所以我们要实现监听键盘事件
+	</p>
+	<p>
+	选中表示完成，用绑定v-bind:class来完成样式改变。点击delete表示删除，用v-show来显示隐藏
+	</p>
+	<p>用v-for循环展示数据</p>
+	<hr>
+		<input @keydown.enter='addTask' type="text" class='edit' v-model='task.content' placeholder="请输入内容">
+		<ul class='list'>
+			<li class='unit' v-for='(item,index) in taskList'>
+				<label>
+					<input type="checkbox" @click='changeState(index)' :checked='item.finished'>
+					<span :class='{"finished":item.finished}'>{{item.content}}</span>
+				</label>
+				<button @click='deleteList(index)' class='delete'>删除</button>
+			</li>
+
+		</ul>
+		<p class='empty' v-if='taskList.length===0'>暂无任务</p>
+
+	</div>
+
+	<script>
+	new Vue({
+		el:"#app",
+		data:{
+			task:{
+				content:'',//任务内容
+				finished:false,//未完成
+				// deleted:false,//未删除
+			},
+			// 任务列表
+			taskList:[]
+
+		},
+		methods:{
+			// 添加任务
+			addTask(){
+				// 将task存入到taskList中
+				this.taskList.push(this.task);
+				// 存入taskList[]后，重置task
+				this.task={
+					content:'',//任务内容
+					finished:false,//未完成
+					// deleted:false,//未删除
+				}
+			},
+			// 点击复选框，是否选中，修改任务状态
+			changeState(index){
+				this.taskList[index].finished=!this.taskList[index].finished
+			},
+			// 删除列表
+			deleteList(index){
+				// 使用原生的splice操作删除数组指定项
+				this.taskList.splice(index,1);
+			}
+		}
+	})
+	</script>
+</body>
+</html>
